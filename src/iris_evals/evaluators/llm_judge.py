@@ -111,7 +111,7 @@ Return ONLY valid JSON in this exact shape:
     text = aicore.chat_complete(
         system=system,
         user=prompt,
-        model_name=os.environ.get("AICORE_JUDGE_MODEL", "gpt-4o"),
+        model_name=os.environ.get("AICORE_JUDGE_MODEL", "anthropic--claude-4.6-sonnet"),
         max_tokens=512,
         temperature=0.0,
     ).strip()

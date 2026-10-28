@@ -66,7 +66,7 @@ def chat_complete(
     system: str,
     user: str,
     *,
-    model_name: str = "gpt-4o",
+    model_name: str = "anthropic--claude-4.6-sonnet",
     max_tokens: int = 512,
     temperature: float = 0.0,
 ) -> str:

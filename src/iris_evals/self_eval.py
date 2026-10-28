@@ -80,19 +80,20 @@ def _parse_x_evals(card: dict, agent_url: str) -> EvalConfig:
     raw_types  = x_evals.get("evaluators", ["deterministic"])
     eval_types = [EvalType(t) for t in raw_types]
 
-    # -- Golden dataset: builtin (registry) OR file path OR builtin+file merge
-    dataset_spec = x_evals.get("dataset", "builtin")
-    if dataset_spec == "builtin":
-        records = get_dataset(agent_name)
-    elif dataset_spec.startswith("builtin+"):
-        # merge built-in records with custom file
-        extra_path = dataset_spec[len("builtin+"):]
-        extra_data = json.loads(Path(extra_path).read_text(encoding="utf-8"))
-        records    = get_dataset(agent_name) + [GoldenRecord(**r) for r in extra_data]
-    else:
-        # pure file path
+    # -- Golden dataset: agent must supply it via x_evals.dataset file path
+    # Deterministic evals require a dataset; LLM-based evals can run without one.
+    dataset_spec = x_evals.get("dataset", None)
+    if dataset_spec and dataset_spec != "builtin":
         data    = json.loads(Path(dataset_spec).read_text(encoding="utf-8"))
         records = [GoldenRecord(**r) for r in data]
+    else:
+        records = []
+
+    if EvalType.DETERMINISTIC in eval_types and not records:
+        raise ValueError(
+            f"Agent '{agent_name}' uses deterministic evals but no golden_dataset was provided. "
+            "Set x_evals.dataset to a JSON file path in your agent card, or switch to llm_as_judge."
+        )
 
     # -- Rubric for LLM_AS_JUDGE
     rubric = get_rubric(agent_name) if EvalType.LLM_AS_JUDGE in eval_types else None
