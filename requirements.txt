@@ -1,4 +1,7 @@
 starlette==0.41.3
 uvicorn==0.32.1
 httpx==0.27.2
-iris-evals @ git+https://github.com/applexus/iris-evals.git@v1.0.0
+pydantic>=2.0.0
+python-dotenv
+rich>=13.0.0
+applexus-iris-evals==1.0.1
