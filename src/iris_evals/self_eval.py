@@ -95,8 +95,16 @@ def _parse_x_evals(card: dict, agent_url: str) -> EvalConfig:
             "Set x_evals.dataset to a JSON file path in your agent card, or switch to llm_as_judge."
         )
 
-    # -- Rubric for LLM_AS_JUDGE
-    rubric = get_rubric(agent_name) if EvalType.LLM_AS_JUDGE in eval_types else None
+    # -- Rubric for LLM_AS_JUDGE: inline from x_evals takes priority over registry
+    if EvalType.LLM_AS_JUDGE in eval_types:
+        inline_rubric = x_evals.get("rubric")
+        if inline_rubric:
+            from iris_evals.schemas import JudgeRubric as _JudgeRubric
+            rubric = _JudgeRubric(**inline_rubric)
+        else:
+            rubric = get_rubric(agent_name)
+    else:
+        rubric = None
 
     # -- Thresholds
     thresholds = get_thresholds(agent_name)

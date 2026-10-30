@@ -1,0 +1,19 @@
+---
+applications:
+  - name: iris-evals-service
+    memory: 512M
+    disk_quota: 1G
+    buildpacks:
+      - python_buildpack
+    command: python app.py
+    health-check-type: http
+    health-check-http-endpoint: /health
+    env:
+      AICORE_RESOURCE_GROUP: default
+      PYTHONPATH: src
+      AICORE_JUDGE_MODEL: anthropic--claude-4.6-sonnet
+      AICORE_CLIENT_ID: sb-0f118613-8f3d-437d-9153-dda7b10f90bf!b584389|aicore!b540
+      AICORE_CLIENT_SECRET: "c61af62b-f650-4a58-8b69-32a417f674db$p_RLQ8jgtqTocINGTnrInEVKNVWeX3J-ivg8tVBMwuQ="
+      AICORE_AUTH_URL: https://jouledeve-m66qjyyo.authentication.eu10.hana.ondemand.com/oauth/token
+      AICORE_BASE_URL: https://api.ai.prod.eu-central-1.aws.ml.hana.ondemand.com/v2
+      ORCHESTRATION_URL: https://api.ai.prod.eu-central-1.aws.ml.hana.ondemand.com/v2/inference/deployments/ddb329733290d215
